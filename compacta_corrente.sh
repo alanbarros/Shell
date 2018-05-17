@@ -151,26 +151,9 @@ function permissao() { # [Arquivo que vai mudar permissão] [Permissão em decim
 }
 
 function verPermissoes() { #Verifica e armazena permissão do arquivo
-	PERM=$(ls -l "${_camAbsLog}" | cut -c 2-10)
+	PERM=$(stat -c '%a' "${_camAbsLog}")
 
-	for (( cnt = 1; cnt < 10; cnt++ )); do
-		VALOR[$cnt]=$(echo ${PERM} | cut -c $cnt)
-		if [ ${VALOR[$cnt]} == "r" ]; then
-		         NUM[$cnt]=4;
-		elif [ ${VALOR[$cnt]} == "w" ]; then
-		        NUM[$cnt]=2;
-		elif [ ${VALOR[$cnt]} == "x" ]; then
-		        NUM[$cnt]=1;
-		else
-		        NUM[$cnt]=0;
-		fi
-	done
-
-	let P_OWN=${NUM[1]}+${NUM[2]}+${NUM[3]} # Permissão do dono
-	let P_GRP=${NUM[4]}+${NUM[5]}+${NUM[6]} # Permissão do grupo 
-	let P_OTR=${NUM[7]}+${NUM[8]}+${NUM[9]} # Permissão de outros
-
-	PERMISSAO=${P_OWN}${P_GRP}${P_OTR} # Define permissão do arquivo
+	PERMISSAO=${PERM} # Define permissão do arquivo
 }
 
 if [ ! -d "$HOME/log" ]; then mkdir ~/log; fi # Cria e/ou verifica diretório do log
